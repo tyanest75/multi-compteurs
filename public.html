@@ -109,7 +109,7 @@
       const ticketBlock = document.getElementById('ticketBlock');
       ticketBlock.innerHTML = `
         <div style="margin-bottom:10px;">
-          <input type="text" id="ticketInput" inputmode="numeric" pattern="[0-9]*" placeholder="Votre ticket" maxlength="4" autocomplete="off" autocorrect="off" spellcheck="false" style="font-size:1.3rem;padding:12px 18px;border-radius:8px;border:1.5px solid #f7b42c;width:80%;max-width:320px;outline:none;text-align:center;" />
+          <input type="number" id="ticketInput" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="Entrez votre numéro de ticket" autocomplete="off" style="font-size:1.3rem;padding:12px 18px;border-radius:8px;border:1.5px solid #f7b42c;width:80%;max-width:320px;outline:none;text-align:center;background:#fff;" />
         </div>
         <div id="ticketValueBlock" style="text-align:center;margin-bottom:8px;"></div>
         <div id="ticketResult" style="text-align:center;font-size:1.2rem;font-weight:600;margin-top:10px;"></div>
@@ -117,8 +117,21 @@
       const input = document.getElementById('ticketInput');
       const result = document.getElementById('ticketResult');
       const ticketValueBlock = document.getElementById('ticketValueBlock');
-      // Restore value from localStorage
-      input.value = localStorage.getItem('ticketInput') || '';
+      // Always start with empty input, but show the value below if present
+      let stored = localStorage.getItem('ticketInput') || '';
+      input.value = '';
+      updateTicketValueBlock(stored);
+      checkTicketResult(stored, result);
+      input.addEventListener('focus', function() {
+        this.value = '';
+      });
+      input.addEventListener('input', function(e) {
+        let val = this.value.replace(/[^0-9]/g, '').slice(0, 4);
+        if (this.value !== val) this.value = val;
+        localStorage.setItem('ticketInput', val);
+        updateTicketValueBlock(val);
+        checkTicketResult(val, result);
+      });
       function updateTicketValueBlock(val) {
         if (val && !isNaN(val)) {
           ticketValueBlock.innerHTML = `<span style="font-size:4.2rem;line-height:1.1;min-width:120px;color:#f7b42c;font-weight:bold;display:inline-block;">${val}</span>`;
@@ -126,17 +139,6 @@
           ticketValueBlock.innerHTML = '';
         }
       }
-      input.addEventListener('input', function() {
-        // Only allow up to 4 digits, no non-numeric
-        let val = this.value.replace(/[^0-9]/g, '').slice(0, 4);
-        this.value = val;
-        localStorage.setItem('ticketInput', val);
-        updateTicketValueBlock(val);
-        checkTicketResult(val, result);
-      });
-      // Initial display
-      updateTicketValueBlock(input.value);
-      checkTicketResult(input.value, result);
     }
 
     // Always render ticket block after counters
