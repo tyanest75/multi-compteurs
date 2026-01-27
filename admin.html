@@ -5,18 +5,131 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - Multi-Compteurs</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f7f7f7; }
-    .container { max-width: 400px; margin: 30px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 24px; }
-    h1 { text-align: center; }
-    form { display: flex; gap: 8px; margin-bottom: 20px; }
-    input[type="text"] { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-    button, .btn { padding: 8px 12px; border: none; border-radius: 4px; background: #007bff; color: #fff; cursor: pointer; }
-    button:active, .btn:active { background: #0056b3; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 430px;
+      margin: 30px auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px #0002;
+      padding: 32px 20px 24px 20px;
+    }
+    h1 {
+      text-align: center;
+      letter-spacing: 1px;
+      color: #2a3d66;
+      margin-bottom: 24px;
+    }
+    form {
+      display: flex; gap: 8px; margin-bottom: 24px;
+    }
+    input[type="text"] {
+      flex: 1; padding: 10px; border: 1px solid #bcd0ee; border-radius: 6px;
+      font-size: 1rem;
+      background: #f7faff;
+      transition: border 0.2s;
+    }
+    input[type="text"]:focus {
+      border: 1.5px solid #007bff;
+      outline: none;
+    }
+    button, .btn {
+      padding: 12px 18px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      background: #007bff;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 2px 8px #007bff22;
+    }
+    button:active, .btn:active {
+      background: #0056b3;
+      transform: scale(0.97);
+    }
+    .btn-minus {
+      background: #51cf66;
+      color: #fff;
+      font-size: 1.5rem;
+      width: 44px; height: 44px;
+      margin: 0 4px;
+    }
+    .btn-plus {
+      background: #51cf66;
+      color: #fff;
+      font-size: 1.5rem;
+      width: 44px; height: 44px;
+      margin: 0 4px;
+    }
+    .btn-reset {
+      background: #ffa502;
+      color: #fff;
+      font-size: 1.2rem;
+      width: 38px; height: 38px;
+      margin-left: 6px;
+    }
+    .btn-delete {
+      background: #343a40;
+      color: #fff;
+      font-size: 1.2rem;
+      width: 38px; height: 38px;
+      margin-left: 6px;
+    }
     ul { list-style: none; padding: 0; }
-    li { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; background: #f1f1f1; border-radius: 4px; padding: 8px; }
-    .counter-name { flex: 1; }
-    .counter-value { width: 32px; text-align: center; font-weight: bold; }
-    @media (max-width: 500px) { .container { max-width: 98vw; padding: 8vw 2vw; } }
+    li {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+      background: #f7faff;
+      border-radius: 8px;
+      padding: 10px 8px;
+      box-shadow: 0 1px 4px #007bff11;
+      transition: box-shadow 0.2s;
+    }
+    li:hover {
+      box-shadow: 0 4px 16px #007bff22;
+    }
+    .counter-name {
+      flex: 1;
+      font-size: 1.1rem;
+      color: #2a3d66;
+      font-weight: 500;
+      margin-right: 8px;
+      transition: color 0.2s;
+    }
+    .counter-name:hover {
+      color: #007bff;
+      text-decoration: underline;
+    }
+    .counter-value-input {
+      width: 60px;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: 1px solid #bcd0ee;
+      border-radius: 6px;
+      background: #fff;
+      margin: 0 4px;
+      padding: 6px 0;
+      transition: border 0.2s;
+    }
+    .counter-value-input:focus {
+      border: 1.5px solid #007bff;
+      outline: none;
+    }
+    @media (max-width: 500px) {
+      .container { max-width: 98vw; padding: 8vw 2vw; }
+      button, .btn { font-size: 1rem; padding: 10px 12px; }
+      .btn-minus, .btn-plus { width: 36px; height: 36px; font-size: 1.2rem; }
+      .btn-reset, .btn-delete { width: 32px; height: 32px; font-size: 1rem; }
+      .counter-value-input { width: 40px; font-size: 1rem; }
+    }
   </style>
 </head>
 <body>
@@ -44,17 +157,53 @@
       Object.entries(compteurs).forEach(([name, value]) => {
         const li = document.createElement('li');
         li.innerHTML = `
-          <span class='counter-name'>${name}</span>
+          <span class='counter-name' style='cursor:pointer;'>${name}</span>
           <button class='btn btn-minus' ${value <= 0 ? 'disabled' : ''}>-</button>
           <input type='number' class='counter-value-input' value='${value}' min='0' style='width:50px;text-align:center;' />
           <button class='btn btn-plus'>+</button>
           <button class='btn btn-reset' style='background:#dc3545;margin-left:4px;'>⭯</button>
+          <button class='btn btn-delete' style='background:#333;margin-left:4px;'>🗑️</button>
         `;
+                const btnDelete = li.querySelector('.btn-delete');
+                btnDelete.onclick = () => {
+                  if (confirm(`Supprimer le compteur "${name}" ?`)) {
+                    fetch('delete.php', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                      body: 'name=' + encodeURIComponent(name)
+                    }).then(fetchCounters);
+                  }
+                };
         const input = li.querySelector('.counter-value-input');
         const btnMinus = li.querySelector('.btn-minus');
         const btnPlus = li.querySelector('.btn-plus');
         const btnReset = li.querySelector('.btn-reset');
-        // Handlers boutons
+        // Handler renommage nom compteur (inline)
+        const nameSpan = li.querySelector('.counter-name');
+        nameSpan.onclick = function() {
+          const inputRename = document.createElement('input');
+          inputRename.type = 'text';
+          inputRename.value = name;
+          inputRename.maxLength = 32;
+          inputRename.style.width = '80px';
+          nameSpan.replaceWith(inputRename);
+          inputRename.focus();
+          inputRename.select();
+          inputRename.onblur = inputRename.onkeydown = function(e) {
+            if (e.type === 'blur' || (e.type === 'keydown' && e.key === 'Enter')) {
+              const newName = inputRename.value.trim();
+              if (newName && newName !== name) {
+                fetch('update_name.php', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                  body: 'old=' + encodeURIComponent(name) + '&new=' + encodeURIComponent(newName)
+                }).then(fetchCounters);
+              } else {
+                fetchCounters();
+              }
+            }
+          };
+        };
         btnMinus.onclick = () => setCounterValue(name, Math.max(0, value-1));
         btnPlus.onclick = () => setCounterValue(name, value+1);
         btnReset.onclick = () => setCounterValue(name, 0);
