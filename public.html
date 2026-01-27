@@ -5,43 +5,173 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Compteurs en temps réel</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f7f7f7; }
-    .container { max-width: 400px; margin: 30px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 24px; }
-    h1 { text-align: center; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: linear-gradient(120deg, #f7b42c 0%, #fc575e 100%);
+      min-height: 100vh;
+    }
+    .container {
+      width: 100vw;
+      max-width: 520px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px #0002;
+      padding: 7vw 4vw 4vw 4vw;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    h1 {
+      text-align: center;
+      color: #fc575e;
+      font-size: 1.1rem;
+      margin-bottom: 18px;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
     ul { list-style: none; padding: 0; }
-    li { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; background: #f1f1f1; border-radius: 4px; padding: 8px; }
-    .counter-name { flex: 1; }
-    .counter-value { width: 32px; text-align: center; font-weight: bold; }
-    @media (max-width: 500px) { .container { max-width: 98vw; padding: 8vw 2vw; } }
+    li {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 22px;
+      background: #f7faff;
+      border-radius: 14px;
+      padding: 18px 12px;
+      box-shadow: 0 1px 8px #fc575e11;
+      transition: box-shadow 0.2s;
+    }
+    .counter-name {
+      flex: 1;
+      font-size: 1.4rem;
+      color: #f7b42c;
+      font-weight: 600;
+      margin-right: 16px;
+      letter-spacing: 0.5px;
+    }
+    .counter-value {
+      width: 120px;
+      text-align: center;
+      font-size: 3.2rem;
+      font-weight: bold;
+      color: #fc575e;
+      background: #fff0e6;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px #fc575e22;
+      padding: 10px 0;
+      letter-spacing: 2px;
+    }
+    @media (max-width: 600px) {
+      .container { width: 100vw; max-width: 100vw; padding: 4vw 2vw 8vw 2vw; min-height: 100vh; }
+      h1 { font-size: 1.3rem; }
+      .counter-name { font-size: 1.1rem; margin-right: 8px; }
+      .counter-value { width: 60px; font-size: 2rem; padding: 6px 0; }
+      li { padding: 10px 4px; margin-bottom: 12px; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Compteurs</h1>
-    <ul id="counterList"></ul>
+    <h1 id="datetime"></h1>
+    <div id="counterBlocks"></div>
+    <div id="ticketBlock" style="margin:18px 0 28px 0;text-align:center;"></div>
   </div>
   <script>
+    function updateDateTime() {
+      const now = new Date();
+      // Format sans 'à' entre date et heure
+      const date = now.toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      const time = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      document.getElementById('datetime').textContent = `${date} ${time}`;
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+
+    let lastCounters = {};
     function renderCounters(compteurs) {
-      const list = document.getElementById('counterList');
-      list.innerHTML = '';
+      lastCounters = compteurs;
+      const blocks = document.getElementById('counterBlocks');
+      blocks.innerHTML = '';
       Object.entries(compteurs).forEach(([name, value]) => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <span class="counter-name">${name}</span>
-          <span class="counter-value">${value}</span>
+        const div = document.createElement('div');
+        div.style.marginBottom = '32px';
+        div.style.textAlign = 'center';
+        div.innerHTML = `
+          <div class="counter-name" style="font-size:2.1rem;color:#f7b42c;font-weight:700;margin:18px 0 10px 0;">${name}</div>
+          <div style="display:flex;justify-content:center;align-items:center;gap:18px;">
+            <span style="font-size:1.25rem;color:#fc575e;font-weight:600;">Numéro en cours :</span>
+            <span class="counter-value" style="font-size:4.2rem;line-height:1.1;min-width:120px;">${value}</span>
+          </div>
         `;
-        list.appendChild(li);
+        blocks.appendChild(div);
       });
     }
+    function renderTicketBlock() {
+      const ticketBlock = document.getElementById('ticketBlock');
+      ticketBlock.innerHTML = `
+        <div style="margin-bottom:10px;">
+          <input type="text" id="ticketInput" inputmode="numeric" pattern="[0-9]*" placeholder="Votre ticket" maxlength="4" autocomplete="off" autocorrect="off" spellcheck="false" style="font-size:1.3rem;padding:12px 18px;border-radius:8px;border:1.5px solid #f7b42c;width:80%;max-width:320px;outline:none;text-align:center;" />
+        </div>
+        <div id="ticketValueBlock" style="text-align:center;margin-bottom:8px;"></div>
+        <div id="ticketResult" style="text-align:center;font-size:1.2rem;font-weight:600;margin-top:10px;"></div>
+      `;
+      const input = document.getElementById('ticketInput');
+      const result = document.getElementById('ticketResult');
+      const ticketValueBlock = document.getElementById('ticketValueBlock');
+      // Restore value from localStorage
+      input.value = localStorage.getItem('ticketInput') || '';
+      function updateTicketValueBlock(val) {
+        if (val && !isNaN(val)) {
+          ticketValueBlock.innerHTML = `<span style="font-size:4.2rem;line-height:1.1;min-width:120px;color:#f7b42c;font-weight:bold;display:inline-block;">${val}</span>`;
+        } else {
+          ticketValueBlock.innerHTML = '';
+        }
+      }
+      input.addEventListener('input', function() {
+        // Only allow up to 4 digits, no non-numeric
+        let val = this.value.replace(/[^0-9]/g, '').slice(0, 4);
+        this.value = val;
+        localStorage.setItem('ticketInput', val);
+        updateTicketValueBlock(val);
+        checkTicketResult(val, result);
+      });
+      // Initial display
+      updateTicketValueBlock(input.value);
+      checkTicketResult(input.value, result);
+    }
 
-    // Désactive SSE, utilise fetch toutes les 2 secondes
-    function fetchCounters() {
+    // Always render ticket block after counters
+    function updateAll() {
       fetch('get.php')
         .then(r => r.json())
-        .then(data => renderCounters(data.compteurs));
+        .then(data => {
+          renderCounters(data.compteurs);
+          renderTicketBlock();
+        });
     }
-    setInterval(fetchCounters, 2000);
-    fetchCounters();
+    setInterval(updateAll, 2000);
+    updateAll();
+
+    function checkTicketResult(val, result) {
+      if (!val) {
+        result.textContent = '';
+        return;
+      }
+      let found = false;
+      Object.entries(lastCounters).forEach(([name, value]) => {
+        if (parseInt(val) <= value) {
+          found = true;
+        }
+      });
+      if (found) {
+        result.textContent = 'Votre numéro a été servi.';
+        result.style.color = '#51cf66';
+      } else {
+        result.textContent = 'Votre numéro n\'est pas encore servi.';
+        result.style.color = '#fc575e';
+      }
+    }
+
+    // Removed duplicate fetchCounters
   </script>
 </body>
 </html>
