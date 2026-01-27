@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compteurs en temps réel</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f7f7f7; }
+    .container { max-width: 400px; margin: 30px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 24px; }
+    h1 { text-align: center; }
+    ul { list-style: none; padding: 0; }
+    li { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; background: #f1f1f1; border-radius: 4px; padding: 8px; }
+    .counter-name { flex: 1; }
+    .counter-value { width: 32px; text-align: center; font-weight: bold; }
+    @media (max-width: 500px) { .container { max-width: 98vw; padding: 8vw 2vw; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Compteurs</h1>
+    <ul id="counterList"></ul>
+  </div>
+  <script>
+    function renderCounters(compteurs) {
+      const list = document.getElementById('counterList');
+      list.innerHTML = '';
+      Object.entries(compteurs).forEach(([name, value]) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span class="counter-name">${name}</span>
+          <span class="counter-value">${value}</span>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    // Désactive SSE, utilise fetch toutes les 2 secondes
+    function fetchCounters() {
+      fetch('get.php')
+        .then(r => r.json())
+        .then(data => renderCounters(data.compteurs));
+    }
+    setInterval(fetchCounters, 2000);
+    fetchCounters();
+  </script>
+</body>
+</html>
