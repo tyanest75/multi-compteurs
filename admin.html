@@ -1,3 +1,4 @@
+<?php include 'admin_auth.php'; ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -57,16 +58,16 @@
     .btn-minus {
       background: #51cf66;
       color: #fff;
-      font-size: 1.5rem;
-      width: 44px; height: 44px;
-      margin: 0 4px;
+      font-size: 2.2rem;
+      width: 70px; height: 70px;
+      margin: 0 8px;
     }
     .btn-plus {
       background: #51cf66;
       color: #fff;
-      font-size: 1.5rem;
-      width: 44px; height: 44px;
-      margin: 0 4px;
+      font-size: 2.2rem;
+      width: 70px; height: 70px;
+      margin: 0 8px;
     }
     .btn-reset {
       background: #ffa502;
@@ -134,7 +135,11 @@
 </head>
 <body>
   <div class="container">
-    <h1>Admin Compteurs</h1>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h1 style="margin-bottom:0;">Admin Compteurs</h1>
+      <a href="logout.php" style="background:#e74c3c;color:#fff;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:bold;box-shadow:0 2px 8px #e74c3c22;transition:background 0.2s;">Déconnexion</a>
+    </div>
+    <hr style="margin:18px 0 24px 0; border:none; border-top:1.5px solid #e0eafc;">
     <form id="addForm">
       <input type="text" id="counterName" placeholder="Nom du compteur" required maxlength="32">
       <button type="submit">Ajouter</button>
