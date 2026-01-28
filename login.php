@@ -2,7 +2,7 @@
 session_start();
 
 // Mot de passe admin (à modifier si besoin)
-$ADMIN_PASSWORD = 'superagent2026';
+$ADMIN_PASSWORD = 'adminreset2024';
 
 if (isset($_POST['password'])) {
     if ($_POST['password'] === $ADMIN_PASSWORD) {

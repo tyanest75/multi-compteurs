@@ -13,276 +13,231 @@
       min-height: 100vh;
     }
     .container {
-      max-width: 430px;
-      margin: 30px auto;
+      width: 100vw;
+      max-width: 100vw;
+      margin: 0;
       background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 4px 24px #0002;
-      padding: 32px 20px 24px 20px;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 4vw 2vw 8vw 2vw;
+      min-height: 100vh;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
     }
     h1 {
       text-align: center;
-      letter-spacing: 1px;
       color: #2a3d66;
-      margin-bottom: 24px;
+      font-size: 2.2rem;
+      margin-bottom: 32px;
+      letter-spacing: 1px;
+      font-weight: 700;
     }
-    form {
-      display: flex; gap: 8px; margin-bottom: 24px;
+    form#addForm {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 32px;
+      justify-content: center;
     }
-    input[type="text"] {
-      flex: 1; padding: 10px; border: 1px solid #bcd0ee; border-radius: 6px;
-      font-size: 1rem;
+    #counterName {
+      flex: 1;
+      font-size: 1.5rem;
+      padding: 18px 16px;
+      border-radius: 12px;
+      border: 2px solid #bcd0ee;
       background: #f7faff;
-      transition: border 0.2s;
-    }
-    input[type="text"]:focus {
-      border: 1.5px solid #007bff;
       outline: none;
     }
-    button, .btn {
-      padding: 12px 18px;
-      border: none;
-      border-radius: 6px;
-      font-size: 1.2rem;
-      font-weight: bold;
+    button[type="submit"] {
       background: #007bff;
       color: #fff;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      padding: 18px 28px;
       cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-      box-shadow: 0 2px 8px #007bff22;
+      transition: background 0.2s;
     }
-    button:active, .btn:active {
-      background: #0056b3;
-      transform: scale(0.97);
+    button[type="submit"]:active { background: #0056b3; }
+    ul#counterList {
+      list-style: none;
+      padding: 0;
     }
-    .btn-minus {
-      background: #51cf66;
-      color: #fff;
-      font-size: 2.2rem;
-      width: 70px; height: 70px;
-      margin: 0 8px;
-    }
-    .btn-plus {
-      background: #51cf66;
-      color: #fff;
-      font-size: 2.2rem;
-      width: 70px; height: 70px;
-      margin: 0 8px;
-    }
-    .btn-reset {
-      background: #ffa502;
-      color: #fff;
-      font-size: 1.2rem;
-      width: 38px; height: 38px;
-      margin-left: 6px;
-    }
-    .btn-delete {
-      background: #343a40;
-      color: #fff;
-      font-size: 1.2rem;
-      width: 38px; height: 38px;
-      margin-left: 6px;
-    }
-    ul { list-style: none; padding: 0; }
-    li {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 14px;
+    ul#counterList li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
       background: #f7faff;
-      border-radius: 8px;
-      padding: 10px 8px;
-      box-shadow: 0 1px 4px #007bff11;
+      border-radius: 18px;
+      padding: 28px 10px;
+      box-shadow: 0 2px 16px #007bff11;
       transition: box-shadow 0.2s;
+      gap: 18px;
     }
-    li:hover {
-      box-shadow: 0 4px 16px #007bff22;
-    }
-    .counter-name {
+    ul#counterList strong {
       flex: 1;
-      font-size: 1.1rem;
-      color: #2a3d66;
-      font-weight: 500;
-      margin-right: 8px;
-      transition: color 0.2s;
-    }
-    .counter-name:hover {
+      font-size: 2.1rem;
       color: #007bff;
-      text-decoration: underline;
+      font-weight: 700;
+      margin-right: 18px;
+      letter-spacing: 1px;
     }
     .counter-value-input {
-      width: 60px;
+      width: 120px;
       text-align: center;
-      font-size: 1.2rem;
+      font-size: 3.2rem;
       font-weight: bold;
-      border: 1px solid #bcd0ee;
-      border-radius: 6px;
+      border-radius: 12px;
+      border: 2px solid #bcd0ee;
       background: #fff;
-      margin: 0 4px;
-      padding: 6px 0;
-      transition: border 0.2s;
+      padding: 16px 0;
+      margin: 0 12px;
     }
-    .counter-value-input:focus {
-      border: 1.5px solid #007bff;
-      outline: none;
+    .btn-plus, .btn-minus {
+      font-size: 3.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 18px;
+      width: 100px;
+      height: 100px;
+      background: #51cf66;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+      box-shadow: 0 6px 24px #51cf6611;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 8px;
     }
-    @media (max-width: 500px) {
-      .container { max-width: 98vw; padding: 8vw 2vw; }
-      button, .btn { font-size: 1rem; padding: 10px 12px; }
-      .btn-minus, .btn-plus { width: 36px; height: 36px; font-size: 1.2rem; }
-      .btn-reset, .btn-delete { width: 32px; height: 32px; font-size: 1rem; }
-      .counter-value-input { width: 40px; font-size: 1rem; }
+    .btn-plus:active, .btn-minus:active {
+      background: #38b000;
+    }
+    @media (max-width: 600px) {
+      .container { width: 100vw; max-width: 100vw; padding: 2vw 0 8vw 0; min-height: 100vh; }
+      h1 { font-size: 1.5rem; }
+      ul#counterList li { padding: 14px 2px; margin-bottom: 16px; }
+      .counter-value-input { width: 90px; font-size: 2.2rem; padding: 10px 0; }
+      .btn-plus, .btn-minus { width: 54px; height: 54px; font-size: 2rem; }
+      #counterName, button[type="submit"] { font-size: 1.1rem; padding: 12px 8px; }
     }
   </style>
 </head>
+
 <body>
-  <div class="container">
-    <div style="display:flex;justify-content:space-between;align-items:center;">
-      <h1 style="margin-bottom:0;">Admin Compteurs</h1>
-      <a href="logout.php" style="background:#e74c3c;color:#fff;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:bold;box-shadow:0 2px 8px #e74c3c22;transition:background 0.2s;">Déconnexion</a>
-    </div>
-    <hr style="margin:18px 0 24px 0; border:none; border-top:1.5px solid #e0eafc;">
-    <form id="addForm">
-      <input type="text" id="counterName" placeholder="Nom du compteur" required maxlength="32">
-      <button type="submit">Ajouter</button>
-    </form>
-    <ul id="counterList"></ul>
-  </div>
-  <script>
-    // Fetch and render counters sans logs
-    function fetchCounters() {
-      fetch('get.php')
-        .then(r => r.json())
-        .then(data => {
-          renderCounters(data.compteurs);
-        });
-    }
+<div class="container">
+  <h1>Admin Compteurs</h1>
 
-    function renderCounters(compteurs) {
-      const list = document.getElementById('counterList');
-      list.innerHTML = '';
-      Object.entries(compteurs).forEach(([name, value]) => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <span class='counter-name' style='cursor:pointer;'>${name}</span>
-          <button class='btn btn-minus' ${value <= 0 ? 'disabled' : ''}>-</button>
-          <input type='number' class='counter-value-input' value='${value}' min='0' style='width:50px;text-align:center;' />
-          <button class='btn btn-plus'>+</button>
-          <button class='btn btn-reset' style='background:#dc3545;margin-left:4px;'>⭯</button>
-          <button class='btn btn-delete' style='background:#333;margin-left:4px;'>🗑️</button>
-        `;
-                const btnDelete = li.querySelector('.btn-delete');
-                btnDelete.onclick = () => {
-                  if (confirm(`Supprimer le compteur "${name}" ?`)) {
-                    fetch('delete.php', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                      body: 'name=' + encodeURIComponent(name)
-                    }).then(fetchCounters);
-                  }
-                };
-        const input = li.querySelector('.counter-value-input');
-        const btnMinus = li.querySelector('.btn-minus');
-        const btnPlus = li.querySelector('.btn-plus');
-        const btnReset = li.querySelector('.btn-reset');
-        // Handler renommage nom compteur (inline)
-        const nameSpan = li.querySelector('.counter-name');
-        nameSpan.onclick = function() {
-          const inputRename = document.createElement('input');
-          inputRename.type = 'text';
-          inputRename.value = name;
-          inputRename.maxLength = 32;
-          inputRename.style.width = '80px';
-          nameSpan.replaceWith(inputRename);
-          inputRename.focus();
-          inputRename.select();
-          inputRename.onblur = inputRename.onkeydown = function(e) {
-            if (e.type === 'blur' || (e.type === 'keydown' && e.key === 'Enter')) {
-              const newName = inputRename.value.trim();
-              if (newName && newName !== name) {
-                fetch('update_name.php', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                  body: 'old=' + encodeURIComponent(name) + '&new=' + encodeURIComponent(newName)
-                }).then(fetchCounters);
-              } else {
-                fetchCounters();
-              }
-            }
-          };
-        };
-        btnMinus.onclick = () => setCounterValue(name, Math.max(0, value-1));
-        btnPlus.onclick = () => setCounterValue(name, value+1);
-        btnReset.onclick = () => setCounterValue(name, 0);
-        // Saisie directe : validation sur Entrée, champ éditable
-        input.addEventListener('focus', function() {
-          this.select();
-          stopAutoFetch();
-          // Sauvegarde la valeur initiale
-          this._oldValue = this.value;
-        });
-        input.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter') {
-            if (this.value !== this._oldValue) {
-              setCounterValue(name, this.value);
-            }
-            this.blur();
-          }
-        });
-        input.addEventListener('blur', function() {
-          if (this.value !== this._oldValue) {
-            setCounterValue(name, this.value);
-          }
-          startAutoFetch();
-        });
-        list.appendChild(li);
-      });
-    }
+  <form id="addForm">
+    <input type="text" id="counterName" placeholder="Nom du compteur" required maxlength="32">
+    <button type="submit">Ajouter</button>
+  </form>
 
-    // Add counter
-    document.getElementById('addForm').onsubmit = function(e) {
-      e.preventDefault();
-      const name = document.getElementById('counterName').value.trim();
-      if (!name) return;
-      fetch('add.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'name=' + encodeURIComponent(name)
-      }).then(() => {
-        document.getElementById('counterName').value = '';
-        fetchCounters();
-      });
-    };
+  <ul id="counterList"></ul>
+</div>
 
-    // Update counter (non utilisé, mais nettoyé)
-    function updateCounter(name, op) {
-      fetch('update.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `name=${name}&op=${op}`
-      })
-      .then(() => fetchCounters());
-    }
+<script>
+let fetchInterval;
+let isEditing = false; // ✅ FLAG IMPORTANT
 
-    // Set counter value directly
-    function setCounterValue(name, value) {
-      value = Math.max(0, parseInt(value) || 0);
-      fetch('update.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `name=${name}&set=${value}`
-      }).then(fetchCounters);
-    }
+function startAutoFetch() {
+  if (fetchInterval) clearInterval(fetchInterval);
+  fetchInterval = setInterval(fetchCounters, 2000);
+}
 
-    // Rafraîchissement centralisé
-    let fetchInterval;
-    function startAutoFetch() {
-      if (fetchInterval) clearInterval(fetchInterval);
-      fetchInterval = setInterval(fetchCounters, 2000);
-    }
-    function stopAutoFetch() {
-      if (fetchInterval) clearInterval(fetchInterval);
-    }
-    startAutoFetch();
+function stopAutoFetch() {
+  if (fetchInterval) clearInterval(fetchInterval);
+}
+
+function fetchCounters() {
+  if (isEditing) return; // ⛔ NE PAS RE-RENDER PENDANT LA SAISIE
+
+  fetch('get.php')
+    .then(r => r.json())
+    .then(data => renderCounters(data.compteurs));
+}
+
+function renderCounters(compteurs) {
+  const list = document.getElementById('counterList');
+  list.innerHTML = '';
+
+  Object.entries(compteurs).forEach(([name, value]) => {
+    const li = document.createElement('li');
+    li.style.flexDirection = 'column';
+    li.style.alignItems = 'stretch';
+    li.innerHTML = `
+      <div style="width:100%;text-align:center;margin-bottom:8px;">
+        <strong>${name}</strong>
+      </div>
+      <div style="display:flex;justify-content:center;align-items:center;gap:18px;width:100%;">
+          <button class="btn-minus">-</button>
+          <input type="number" class="counter-value-input" value="${value}" min="0">
+          <button class="btn-plus">+</button>
+      </div>
+    `;
+
+    const input = li.querySelector('.counter-value-input');
+    const btnPlus = li.querySelector('.btn-plus');
+    const btnMinus = li.querySelector('.btn-minus');
+
+    btnPlus.onclick = () => setCounterValue(name, value + 1);
+    btnMinus.onclick = () => setCounterValue(name, Math.max(0, value - 1));
+
+    input.addEventListener('focus', function() {
+      isEditing = true;
+      stopAutoFetch();
+      this._oldValue = this.value;
+      this.select();
+    });
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        this.blur();
+      }
+    });
+
+    input.addEventListener('blur', function() {
+      isEditing = false;
+      if (this.value !== this._oldValue) {
+        setCounterValue(name, this.value);
+      }
+      startAutoFetch();
+    });
+
+    list.appendChild(li);
+  });
+}
+
+function setCounterValue(name, value) {
+  value = Math.max(0, parseInt(value) || 0);
+  fetch('update.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `name=${encodeURIComponent(name)}&set=${value}`
+  }).then(fetchCounters);
+}
+
+document.getElementById('addForm').onsubmit = function (e) {
+  e.preventDefault();
+  const name = counterName.value.trim();
+  if (!name) return;
+
+  fetch('add.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'name=' + encodeURIComponent(name)
+  }).then(() => {
+    counterName.value = '';
     fetchCounters();
-  </script>
+  });
+};
+
+startAutoFetch();
+fetchCounters();
+</script>
 </body>
 </html>

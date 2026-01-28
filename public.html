@@ -72,10 +72,35 @@
 <body>
   <div class="container">
     <h1 id="datetime"></h1>
+    <button id="enableSoundBtn" style="display:block;margin:18px auto 0 auto;padding:12px 24px;font-size:1.1rem;border-radius:8px;border:2px solid #f7b42c;background:#fffbe6;color:#f7b42c;font-weight:bold;cursor:pointer;">🔊 Activer le son</button>
     <div id="counterBlocks"></div>
     <div id="ticketBlock" style="margin:18px 0 28px 0;text-align:center;"></div>
+      <div id="alertSelectBlock" style="text-align:center;margin-bottom:18px;"></div>
+    <audio id="notifSound" src="notif.mp3" preload="auto"></audio>
+    <div id="notifPush" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(255,255,0,0.85);z-index:9999;align-items:center;justify-content:center;font-size:2.2rem;font-weight:bold;color:#2a3d66;text-align:center;">C'est bientôt votre tour !</div>
   </div>
   <script>
+    // Activation du son sur interaction utilisateur
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const btn = document.getElementById('enableSoundBtn');
+      const audio = document.getElementById('notifSound');
+      let confirmMsg = null;
+      btn.addEventListener('click', function() {
+        audio.play().then(() => {
+          btn.style.display = 'none';
+          if (!confirmMsg) {
+            confirmMsg = document.createElement('div');
+            confirmMsg.textContent = 'Son activé !';
+            confirmMsg.style = 'color:#51cf66;font-weight:bold;text-align:center;margin:10px 0 0 0;font-size:1.1rem;';
+            btn.parentNode.insertBefore(confirmMsg, btn.nextSibling);
+          }
+        }).catch(() => {
+          alert('Impossible d\'activer le son. Vérifiez le volume ou les permissions du navigateur.');
+        });
+      });
+    });
+
     function updateDateTime() {
       const now = new Date();
       // Format sans 'à' entre date et heure
@@ -105,20 +130,46 @@
         blocks.appendChild(div);
       });
     }
+    let ticketInputEditing = false;
     function renderTicketBlock() {
       const ticketBlock = document.getElementById('ticketBlock');
       ticketBlock.innerHTML = `
         <div style="margin-bottom:10px;">
-          <input type="text" id="ticketInput" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="Entrez votre numéro de ticket" autocomplete="off" style="font-size:2.5rem;padding:16px 0 16px 0;border-radius:14px;border:2.5px solid #f7b42c;width:95%;max-width:400px;outline:none;text-align:center;background:#fff;font-weight:700;letter-spacing:3px;box-shadow:0 2px 12px #f7b42c22;transition:border 0.2s;" />
+          <input type="number" id="ticketInput" inputmode="numeric" min="0" step="1" maxlength="4" placeholder="Entrez votre numéro" autocomplete="off" style="width:100%;max-width:320px;text-align:center;font-size:2.5rem;font-weight:700;border-radius:16px;border:2.5px solid #f7b42c;background:#fff;padding:18px 0;letter-spacing:3px;box-shadow:0 2px 16px #f7b42c22;transition:border 0.2s;outline:none;" />
         </div>
         <div id="ticketResult" style="text-align:center;font-size:1.2rem;font-weight:600;margin-top:10px;"></div>
+        <style>input#ticketInput::placeholder{font-size:1.1rem;font-weight:400;opacity:0.7;}</style>
       `;
+      // Ajout du sélecteur d'alerte
+      const alertSelectBlock = document.getElementById('alertSelectBlock');
+      alertSelectBlock.innerHTML = `
+        <label for="alertBefore" style="font-size:1.1rem;margin-right:8px;">Alerte avant :</label>
+        <select id="alertBefore" style="font-size:1.1rem;padding:6px 12px;border-radius:8px;border:1.5px solid #f7b42c;">
+          <option value="5">5 personnes</option>
+          <option value="10">10 personnes</option>
+          <option value="20">20 personnes</option>
+        </select>
+      `;
+      // Persistance du choix
+      const alertBefore = document.getElementById('alertBefore');
+      let storedAlert = localStorage.getItem('alertBefore') || '5';
+      alertBefore.value = storedAlert;
+      alertBefore.addEventListener('change', function() {
+        localStorage.setItem('alertBefore', this.value);
+      });
       const input = document.getElementById('ticketInput');
       const result = document.getElementById('ticketResult');
-      // Remettre la valeur précédente si présente
       let stored = localStorage.getItem('ticketInput') || '';
       input.value = stored;
       checkTicketResult(stored, result);
+      input.addEventListener('focus', function() {
+        ticketInputEditing = true;
+        if (window.updateAllInterval) clearInterval(window.updateAllInterval);
+      });
+      input.addEventListener('blur', function() {
+        ticketInputEditing = false;
+        if (!window.updateAllInterval) window.updateAllInterval = setInterval(updateAll, 2000);
+      });
       input.addEventListener('input', function(e) {
         let val = this.value.replace(/[^0-9]/g, '').slice(0, 4);
         if (this.value !== val) this.value = val;
@@ -136,30 +187,70 @@
           renderTicketBlock();
         });
     }
-    setInterval(updateAll, 2000);
+    window.updateAllInterval = setInterval(updateAll, 2000);
     updateAll();
 
     function checkTicketResult(val, result) {
+      const alertBefore = localStorage.getItem('alertBefore') || '5';
       if (!val) {
         result.textContent = '';
+        hideNotifPush();
         return;
       }
       let found = false;
+      let almost = false;
+      let maxServed = 0;
+      if (typeof window.lastServedValue === 'undefined') window.lastServedValue = null;
       Object.entries(lastCounters).forEach(([name, value]) => {
         if (parseInt(val) <= value) {
           found = true;
+        }
+        if (value > maxServed) maxServed = value;
+        if (parseInt(val) - value > 0 && parseInt(val) - value <= parseInt(alertBefore)) {
+          almost = true;
         }
       });
       if (found) {
         result.textContent = 'Votre numéro a été servi.';
         result.style.color = '#51cf66';
+        hideNotifPush();
+        window.lastServedValue = maxServed;
       } else {
         result.textContent = 'Votre numéro n\'est pas encore servi.';
         result.style.color = '#fc575e';
+        if (almost && (window.lastServedValue === null || maxServed !== window.lastServedValue)) {
+          showNotifPush();
+          window.lastServedValue = maxServed;
+        } else if (!almost) {
+          hideNotifPush();
+          window.lastServedValue = maxServed;
+        }
       }
+    }
+
+    let notifTimeout = null;
+    function showNotifPush() {
+      const notif = document.getElementById('notifPush');
+      notif.style.display = 'flex';
+      try {
+        document.getElementById('notifSound').play();
+      } catch(e) {}
+      if (notifTimeout) clearTimeout(notifTimeout);
+      notifTimeout = setTimeout(hideNotifPush, 2000);
+    }
+    function hideNotifPush() {
+      const notif = document.getElementById('notifPush');
+      notif.style.display = 'none';
+      if (notifTimeout) clearTimeout(notifTimeout);
+      notifTimeout = null;
+    }
+    function hideNotifPush() {
+      const notif = document.getElementById('notifPush');
+      notif.style.display = 'none';
     }
 
     // Removed duplicate fetchCounters
   </script>
 </body>
 </html>
+
